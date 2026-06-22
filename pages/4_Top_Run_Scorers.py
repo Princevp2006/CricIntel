@@ -3,17 +3,20 @@
 import streamlit as st
 
 from utils.charts import bar_chart, pie_chart
-from utils.components import render_footer, render_sidebar_branding, section_header, setup_page
-from utils.data_loader import load_deliveries
+from utils.components import page_header, render_footer, render_sidebar_branding, setup_page
+from utils.data_loader import get_summary_stats, load_deliveries, load_matches
 
 setup_page("Top Run Scorers", "📊")
-render_sidebar_branding()
 
 deliveries = load_deliveries()
+matches = load_matches()
+summary = get_summary_stats(deliveries, matches)
+render_sidebar_branding(summary)
 
-section_header(
-    "📈 Top Run Scorers",
-    "Interactive visualizations of IPL's leading run scorers.",
+page_header(
+    "Top Run Scorers",
+    "Interactive leaderboard visualizations with configurable depth, run share analysis, and detailed stat tables.",
+    "Leaderboard",
 )
 
 top_n = st.slider("Number of batters", min_value=5, max_value=20, value=10, step=1)
@@ -51,17 +54,9 @@ with tab_table:
     table_df.columns = ["Batter", "Total Runs"]
     table_df.index = range(1, len(table_df) + 1)
     table_df.index.name = "Rank"
-
-    balls = (
-        deliveries.groupby("batter")["ball"]
-        .count()
-        .reindex(top_batters.index)
-    )
+    balls = deliveries.groupby("batter")["ball"].count().reindex(top_batters.index)
     table_df["Balls Faced"] = balls.values
-    table_df["Strike Rate"] = (
-        table_df["Total Runs"] / table_df["Balls Faced"] * 100
-    ).round(2)
-
+    table_df["Strike Rate"] = (table_df["Total Runs"] / table_df["Balls Faced"] * 100).round(2)
     st.dataframe(table_df, use_container_width=True)
 
 render_footer()

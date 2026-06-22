@@ -4,23 +4,26 @@ import streamlit as st
 import plotly.express as px
 
 from utils.analytics import get_head_to_head
-from utils.charts import bar_chart, pie_chart
-from utils.components import render_footer, render_sidebar_branding, section_header, setup_page
-from utils.data_loader import get_batters, get_bowlers, load_deliveries
+from utils.charts import apply_chart_layout, bar_chart, pie_chart
+from utils.components import page_header, render_footer, render_sidebar_branding, setup_page
+from utils.data_loader import get_batters, get_bowlers, get_summary_stats, load_deliveries, load_matches
 
 setup_page("Batter vs Bowler", "⚔️")
-render_sidebar_branding()
 
 deliveries = load_deliveries()
+matches = load_matches()
+summary = get_summary_stats(deliveries, matches)
+render_sidebar_branding(summary)
 batters = get_batters(deliveries)
 bowlers = get_bowlers(deliveries)
 
-section_header(
-    "⚔️ Batter vs Bowler Analyzer",
-    "Explore head-to-head statistics between any batter and bowler combination.",
+page_header(
+    "Batter vs Bowler",
+    "Head-to-head intelligence between any batter–bowler pairing with dismissals, strike rate, and ball-by-ball records.",
+    "Rivalry Analytics",
 )
 
-col_sel1, col_sel2 = st.columns(2)
+col_sel1, col_sel2 = st.columns(2, gap="large")
 with col_sel1:
     batter = st.selectbox("Select Batter", batters, key="h2h_batter")
 with col_sel2:
@@ -38,8 +41,7 @@ if balls == 0:
     st.warning(f"No recorded deliveries between **{batter}** and **{bowler}**.")
     st.stop()
 
-# KPI row
-k1, k2, k3, k4, k5 = st.columns(5)
+k1, k2, k3, k4, k5 = st.columns(5, gap="medium")
 with k1:
     st.metric("Runs Scored", f"{runs:,}")
 with k2:
@@ -51,12 +53,12 @@ with k4:
 with k5:
     st.metric("Boundaries", boundaries)
 
-st.markdown("---")
+st.markdown("<div style='height:0.75rem'></div>", unsafe_allow_html=True)
 
 tab_viz, tab_table = st.tabs(["📊 Visualizations", "📋 Ball-by-Ball"])
 
 with tab_viz:
-    v1, v2 = st.columns(2)
+    v1, v2 = st.columns(2, gap="large")
     with v1:
         over_runs = data.groupby("over")["batsman_runs"].sum()
         st.plotly_chart(
@@ -64,11 +66,13 @@ with tab_viz:
             use_container_width=True,
         )
     with v2:
-        outcome_labels = ["Dots", "Singles+", "Boundaries", "Wickets"]
         singles = balls - dots - boundaries - dismissals
-        outcome_values = [dots, max(singles, 0), boundaries, dismissals]
         st.plotly_chart(
-            pie_chart(outcome_labels, outcome_values, "Ball Outcome Split"),
+            pie_chart(
+                ["Dots", "Singles+", "Boundaries", "Wickets"],
+                [dots, max(singles, 0), boundaries, dismissals],
+                "Ball Outcome Split",
+            ),
             use_container_width=True,
         )
 
@@ -78,14 +82,14 @@ with tab_viz:
         y=run_values.values,
         labels={"x": "Runs off Bat", "y": "Count"},
         color=run_values.values,
-        color_continuous_scale=["#1D2951", "#C41E3A", "#F59E0B"],
+        color_continuous_scale=[[0, "#132038"], [0.5, "#E63946"], [1, "#F4A261"]],
     )
-    fig.update_layout(
-        title=dict(text="Runs Distribution per Delivery", font=dict(color="#F8FAFC")),
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#E2E8F0"), coloraxis_showscale=False,
+    fig.update_layout(coloraxis_showscale=False)
+    fig.update_traces(marker=dict(cornerradius=6), hovertemplate="<b>%{x} runs</b><br>Count: %{y}<extra></extra>")
+    st.plotly_chart(
+        apply_chart_layout(fig, "Runs Distribution per Delivery"),
+        use_container_width=True,
     )
-    st.plotly_chart(fig, use_container_width=True)
 
 with tab_table:
     display_cols = ["over", "ball", "batsman_runs", "total_runs", "is_wicket", "dismissal_kind"]
@@ -96,7 +100,7 @@ with tab_table:
         styled.sort_values(["over", "ball"]),
         use_container_width=True,
         hide_index=True,
-        height=400,
+        height=420,
     )
 
 render_footer()
