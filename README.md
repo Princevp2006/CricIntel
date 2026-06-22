@@ -1,114 +1,86 @@
-# 🏏 CricIntel - AI Powered Cricket Analytics Platform
+# 🏏 CricIntel — AI-Powered Cricket Analytics Platform
 
-## 📌 Project Overview
+A modern, professional sports analytics dashboard built with **Streamlit**, **Pandas**, **Plotly**, and **Scikit-Learn**. CricIntel transforms IPL ball-by-ball data into actionable insights — from individual batter analysis to ML-powered win probability predictions.
 
-CricIntel is a cricket analytics platform built using Python, Machine Learning, and Streamlit. The project analyzes IPL ball-by-ball data to provide insights into player performance, batter-bowler rivalries, fantasy team selection, and cricket statistics.
+![CricIntel](assets/logo.png)
 
-## 🚀 Features
+## ✨ Features
 
-### 🎯 Batter Analyzer
+| Module | Description |
+|--------|-------------|
+| **Home Dashboard** | Hero landing page with platform KPIs, top performers, and quick stats |
+| **Batter Analyzer** | Runs, strike rate, phase-wise breakdowns, and scoring patterns |
+| **Batter vs Bowler** | Head-to-head stats, dismissals, ball-by-ball table, interactive charts |
+| **Fantasy Optimizer** | AI-recommended Best XI with captain & vice-captain picks |
+| **Top Run Scorers** | Interactive Plotly bar charts and run distribution pie charts |
+| **Win Probability** | Random Forest match outcome predictor |
+| **Match Insights** | Venue, team, season, and toss analytics |
 
-* Total Runs
-* Balls Faced
-* Strike Rate
-* Player Performance Analysis
+## 🎨 Design
 
-### ⚔️ Batter vs Bowler Analyzer
+- Modern dark theme with cricket branding (navy, red, gold palette)
+- Custom CSS — rounded cards, hover effects, animated hero section
+- Plotly interactive visualizations throughout
+- Responsive layout with sidebar navigation and logo
 
-* Head-to-Head Statistics
-* Runs Scored
-* Balls Faced
-* Strike Rate
-* Dismissals
-* Ball-by-Ball Record
+## 📂 Project Structure
 
-### 🏆 Fantasy Team Optimizer
+```
+CricIntel/
+├── app.py                          # Landing page
+├── pages/
+│   ├── 1_Batter_Analyzer.py
+│   ├── 2_Batter_vs_Bowler.py
+│   ├── 3_Fantasy_Team_Optimizer.py
+│   ├── 4_Top_Run_Scorers.py
+│   ├── 5_Win_Probability.py
+│   └── 6_Match_Insights.py
+├── utils/
+│   ├── data_loader.py              # Cached data loading
+│   ├── analytics.py                # Stats & ML models
+│   ├── charts.py                   # Plotly chart builders
+│   └── components.py               # UI components & CSS
+├── assets/
+│   └── logo.png
+├── data/
+│   ├── deliveries.csv
+│   └── matches.csv
+├── .streamlit/
+│   └── config.toml
+├── requirements.txt
+└── README.md
+```
 
-* Best Fantasy XI Selection
-* Captain Recommendation
-* Vice-Captain Recommendation
-* Fantasy Points Calculation
+## 🛠️ Technologies
 
-### 📊 Top Run Scorers Dashboard
-
-* Top 10 Run Scorers
-* Interactive Bar Chart
-* Run Distribution Pie Chart
-
-### 🏠 Home Dashboard
-
-* Total Deliveries
-* Total Matches
-* Total Players
-* Dataset Statistics
-
----
-
-## 🛠️ Technologies Used
-
-* Python
-* Pandas
-* NumPy
-* Scikit-Learn
-* Matplotlib
-* Streamlit
-
----
-
-## 📂 Dataset
-
-* IPL Matches Dataset
-* IPL Ball-by-Ball Deliveries Dataset
-
----
+- **Python** · **Pandas** · **NumPy**
+- **Streamlit** — dashboard framework
+- **Plotly** — interactive visualizations
+- **Scikit-Learn** — win probability model
 
 ## 💻 Installation
-
-Clone the repository:
 
 ```bash
 git clone https://github.com/princevp2006/CricIntel.git
 cd CricIntel
-```
-
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
-Run the application:
+Place IPL datasets in the `data/` folder:
+
+- `data/deliveries.csv`
+- `data/matches.csv`
+
+## 🚀 Run
 
 ```bash
 python -m streamlit run app.py
 ```
 
----
-
-## 📈 Project Workflow
-
-1. Data Collection
-2. Data Cleaning
-3. Exploratory Data Analysis (EDA)
-4. Feature Engineering
-5. Machine Learning
-6. Dashboard Development
-7. Deployment
-
----
-
-## 🎯 Future Enhancements
-
-* Win Probability Predictor
-* Live Match Analytics
-* Advanced Fantasy Team Optimizer
-* Venue-Based Analysis
-* Player Form Predictor
-
----
+Open **http://localhost:8501** in your browser.
 
 ## 👨‍💻 Developer
 
-Prince Prajapati
+**Prince Prajapati**
 
-CricIntel - AI Powered Cricket Analytics Platform
+CricIntel — AI-Powered Cricket Analytics Platform 🏏

@@ -1,259 +1,149 @@
-import pandas as pd
+"""CricIntel — AI-Powered Cricket Analytics Platform."""
+
 import streamlit as st
-import matplotlib.pyplot as plt
+
+from utils.analytics import get_match_insights, get_top_performers
+from utils.charts import bar_chart, pie_chart
+from utils.components import (
+    inject_styles,
+    kpi_card,
+    performer_card_html,
+    render_footer,
+    render_sidebar_branding,
+)
+from utils.data_loader import (
+    get_player_stats,
+    get_summary_stats,
+    load_deliveries,
+    load_matches,
+)
 
 st.set_page_config(
-    page_title="CricIntel",
+    page_title="CricIntel | Home",
     page_icon="🏏",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+inject_styles()
+render_sidebar_branding()
+
+deliveries = load_deliveries()
+matches = load_matches()
+player_stats = get_player_stats(deliveries)
+summary = get_summary_stats(deliveries, matches)
+insights = get_match_insights(matches)
+performers = get_top_performers(player_stats)
+
+# Hero
+st.markdown(
+    """
+    <div class="hero-container">
+        <div class="hero-badge">IPL Analytics · Machine Learning</div>
+        <h1 class="hero-title">🏏 CricIntel</h1>
+        <p class="hero-subtitle">AI-Powered Cricket Analytics Platform</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
-
-deliveries = pd.read_csv("deliveries.csv")
-matches = pd.read_csv("matches.csv")
-
-
-st.sidebar.title("🏏 CricIntel")
-
-st.sidebar.markdown("""
-AI Powered Cricket Analytics
-
-Modules:
-- Batter Analyzer
-- Rivalry Analyzer
-- Fantasy Optimizer
-- Top Run Scorers
-""")
-
-option = st.sidebar.selectbox(
-    "Choose Module",
-    [
-        "Home",
-        "Batter Analyzer",
-        "Batter vs Bowler",
-        "Fantasy Team Optimizer",
-        "Top Run Scorers"
-    ]
+st.markdown(
+    "Unlock deep insights from IPL ball-by-ball data — player performance, "
+    "head-to-head rivalries, fantasy team optimization, and predictive analytics "
+    "powered by machine learning."
 )
 
-
-
-player_stats = pd.DataFrame({
-    "player":[
-        "S Dhawan",
-        "V Kohli",
-        "RG Sharma",
-        "DA Warner"
-    ],
-    "predicted_points":[
-        6526,
-        6513,
-        6490,
-        6196
-    ]
-})
-
-
-
-
-player_stats = deliveries.groupby('batter').agg({
-    'batsman_runs':'sum',
-    'ball':'count',
-    'is_wicket':'sum'
-}).reset_index()
-
-player_stats.columns = [
-    'player',
-    'runs',
-    'balls_faced',
-    'dismissals'
-]
-
-player_stats['strike_rate'] = (
-    player_stats['runs']
-    /
-    player_stats['balls_faced']
-) * 100
-
-player_stats['fantasy_points'] = (
-    player_stats['runs']
-    +
-    player_stats['strike_rate']*0.2
-    -
-    player_stats['dismissals']*0.5
-)
-
-player_stats['predicted_points'] = player_stats['fantasy_points']
-
-
-
-
-
-st.set_page_config(page_title="CricIntel")
-
-st.title("🏏 CricIntel")
-st.subheader("Cricket Analytics Platform")
-
-
-if option == "Top Run Scorers":
-
-    st.subheader("📈 Top 10 Run Scorers")
-
-    top_batters = deliveries.groupby(
-        'batter'
-    )['batsman_runs'].sum().sort_values(
-        ascending=False
-    ).head(10)
-
-    st.bar_chart(top_batters)
-
-    st.subheader("🥧 Run Distribution")
-
-    top_batters = deliveries.groupby('batter')['batsman_runs'].sum().sort_values(ascending=False).head(5)
-
-    fig, ax = plt.subplots()
-
-    ax.pie(
-    top_batters.values,
-    labels=top_batters.index,
-    autopct='%1.1f%%'
-    )
-    st.pyplot(fig)
-
-
-
-
-if option == "Home":
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(
-            "Total Deliveries",
-            len(deliveries)
-        )
-
-    with col2:
-        st.metric(
-            "Total Matches",
-            deliveries['match_id'].nunique()
-        )
-
-    with col3:
-        st.metric(
-            "Players",
-            deliveries['batter'].nunique()
-        )
-
-    st.markdown("---")
-
-    st.write(
-        "Welcome to CricIntel - AI Powered Cricket Analytics Dashboard."
-    )
-
-if option == "Batter Analyzer":
-
-    st.subheader("🏏 Batter Analyzer")
-
-    batter = st.selectbox(
-        "Select Batter",
-        sorted(deliveries['batter'].dropna().unique())
-    )
-
-    batter_data = deliveries[
-        deliveries['batter'] == batter
-    ]
-
-    runs = batter_data['batsman_runs'].sum()
-    balls = len(batter_data)
-
-    strike_rate = round((runs / balls) * 100, 2)
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("Runs", runs)
-
-    with col2:
-        st.metric("Balls", balls)
-
-    with col3:
-        st.metric("Strike Rate", strike_rate)
-
-if option == "Batter vs Bowler":
-
-    st.subheader("⚔️ Batter vs Bowler Rivalry")
-
-    batter = st.selectbox(
-        "Select Batter",
-        sorted(deliveries['batter'].dropna().unique()),
-        key="batter_rivalry"
-    )
-
-    bowler = st.selectbox(
-        "Select Bowler",
-        sorted(deliveries['bowler'].dropna().unique()),
-        key="bowler_rivalry"
-    )
-
-    data = deliveries[
-        (deliveries['batter'] == batter) &
-        (deliveries['bowler'] == bowler)
-    ]
-
-    runs = data['batsman_runs'].sum()
-    balls = len(data)
-
-    if balls > 0:
-        strike_rate = round((runs / balls) * 100, 2)
-    else:
-        strike_rate = 0
-
-    dismissals = data['is_wicket'].sum()
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("Runs Scored", runs)
-
-    with col2:
-        st.metric("Balls Faced", balls)
-
-    with col3:
-        st.metric("Strike Rate", strike_rate)
-
-    st.metric("Dismissals", dismissals)
-
-    st.write("Ball-by-Ball Record")
-    st.dataframe(
-    data[
-        ['over', 'ball', 'batsman_runs', 'is_wicket']
-    ]
-)
-
-if option == "Fantasy Team Optimizer":
-
-    st.subheader("🏆 Fantasy Team Optimizer")
-
-    best_xi = player_stats.sort_values(
-        'predicted_points',
-        ascending=False
-    ).head(11)
-
-    captain = best_xi.iloc[0]['player']
-    vice_captain = best_xi.iloc[1]['player']
-
-    st.success(f"Captain: {captain}")
-    st.info(f"Vice Captain: {vice_captain}")
-
-    st.dataframe(
-        best_xi[
-            ['player','predicted_points']
-        ]
-    )
-
+# Key statistics
+st.markdown("### 📊 Platform Overview")
+c1, c2, c3, c4 = st.columns(4)
+with c1:
+    st.markdown(kpi_card("🏟️", f"{summary['total_matches']:,}", "Total Matches"), unsafe_allow_html=True)
+with c2:
+    st.markdown(kpi_card("👤", f"{summary['total_players']:,}", "Total Players"), unsafe_allow_html=True)
+with c3:
+    st.markdown(kpi_card("⚾", f"{summary['total_deliveries']:,}", "Total Deliveries"), unsafe_allow_html=True)
+with c4:
+    st.markdown(kpi_card("🏆", f"{summary['total_seasons']}", "Seasons Covered"), unsafe_allow_html=True)
 
 st.markdown("---")
-st.markdown(
-    "Developed by Prince Prajapati | CricIntel 🏏"
+
+# Tabs for dashboard sections
+tab_overview, tab_performers, tab_insights = st.tabs(
+    ["📈 Quick Stats", "⭐ Top Performers", "🔍 Match Insights"]
 )
+
+with tab_overview:
+    col_a, col_b = st.columns(2)
+    with col_a:
+        top5 = player_stats.head(5).set_index("player")["runs"]
+        st.plotly_chart(bar_chart(top5, "Top 5 Run Scorers"), use_container_width=True)
+    with col_b:
+        labels = ["Runs", "Wickets", "Teams", "Venues"]
+        values = [
+            summary["total_runs"],
+            summary["total_wickets"],
+            summary["total_teams"],
+            matches["venue"].nunique(),
+        ]
+        st.plotly_chart(pie_chart(labels, values, "Dataset Composition"), use_container_width=True)
+
+with tab_performers:
+    st.markdown("#### 🌟 IPL Elite Performers")
+    p1, p2, p3 = st.columns(3)
+    top = performers["Top Scorer"]
+    best_sr = performers["Best Strike Rate"]
+    most_6s = performers["Most Sixes"]
+    with p1:
+        st.markdown(
+            performer_card_html("Top Scorer", top["player"], f"{int(top['runs']):,} runs"),
+            unsafe_allow_html=True,
+        )
+    with p2:
+        st.markdown(
+            performer_card_html(
+                "Best Strike Rate (500+ balls)",
+                best_sr["player"],
+                f"SR {best_sr['strike_rate']:.1f}",
+            ),
+            unsafe_allow_html=True,
+        )
+    with p3:
+        st.markdown(
+            performer_card_html(
+                "Most Sixes", most_6s["player"], f"{int(most_6s['sixes'])} sixes"
+            ),
+            unsafe_allow_html=True,
+        )
+
+with tab_insights:
+    i1, i2, i3, i4 = st.columns(4)
+    with i1:
+        st.metric("Completed Matches", f"{insights['total_completed']:,}")
+    with i2:
+        st.metric("Avg Target Score", insights["avg_target"])
+    with i3:
+        st.metric("Toss → Win Rate", f"{insights['toss_win_pct']}%")
+    with i4:
+        st.metric("Top Venue", insights["top_venue"][:20] + "…" if len(insights["top_venue"]) > 20 else insights["top_venue"])
+
+    st.info(f"🏅 Most Player of the Match awards: **{insights['most_pom']}**")
+
+# Module cards
+st.markdown("### 🧭 Explore Modules")
+st.markdown("Use the sidebar to navigate between analytics modules.")
+
+modules = [
+    ("🏏", "Batter Analyzer", "Deep-dive into individual batting performance"),
+    ("⚔️", "Batter vs Bowler", "Head-to-head rivalry statistics"),
+    ("🏆", "Fantasy Optimizer", "AI-recommended Best XI with captain picks"),
+    ("📊", "Top Run Scorers", "Interactive leaderboard visualizations"),
+    ("🎯", "Win Probability", "ML-powered match outcome predictor"),
+    ("📋", "Match Insights", "Tournament-level analytics dashboard"),
+]
+cols = st.columns(3)
+for i, (icon, name, desc) in enumerate(modules):
+    with cols[i % 3]:
+        with st.container(border=True):
+            st.markdown(f"#### {icon} {name}")
+            st.caption(desc)
+
+render_footer()
