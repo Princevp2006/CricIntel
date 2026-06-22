@@ -1,4 +1,4 @@
-"""Match Insights — tournament-level analytics dashboard."""
+"""Tournament Insights — season-level analytics dashboard."""
 
 import pandas as pd
 import plotly.express as px
@@ -9,7 +9,7 @@ from utils.charts import apply_chart_layout, bar_chart, pie_chart
 from utils.components import info_banner, page_header, render_footer, render_sidebar_branding, setup_page
 from utils.data_loader import get_summary_stats, load_deliveries, load_matches
 
-setup_page("Match Insights", "📋")
+setup_page("Tournament Insights", "📋")
 
 deliveries = load_deliveries()
 matches = load_matches()
@@ -18,8 +18,8 @@ render_sidebar_branding(summary)
 insights = get_match_insights(matches)
 
 page_header(
-    "Match Insights Dashboard",
-    "Tournament-level analytics covering venues, teams, season trends, and toss impact across the IPL archive.",
+    "Tournament Insights Dashboard",
+    "Season-level analytics covering venues, teams, trends, and toss impact across the IPL archive.",
     "Tournament Intelligence",
 )
 

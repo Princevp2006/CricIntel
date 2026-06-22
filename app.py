@@ -5,6 +5,7 @@ import streamlit as st
 from utils.analytics import get_match_insights, get_top_performers
 from utils.charts import bar_chart, pie_chart
 from utils.components import (
+    hero_premium_html,
     info_banner,
     inject_styles,
     kpi_card,
@@ -13,6 +14,7 @@ from utils.components import (
     render_footer,
     render_sidebar_branding,
     section_header,
+    LOGO_PATH,
 )
 from utils.data_loader import (
     get_player_stats,
@@ -38,46 +40,58 @@ performers = get_top_performers(player_stats)
 
 render_sidebar_branding(summary)
 
-# ── Hero ──────────────────────────────────────────────────────────────────────
+# ── Premium hero ──────────────────────────────────────────────────────────────
 st.markdown(
-    """
-    <div class="hero-container">
-        <div class="hero-badge">● Live IPL Intelligence · ML Powered</div>
-        <h1 class="hero-title">🏏 CricIntel</h1>
-        <p class="hero-subtitle">AI-Powered Cricket Analytics Platform</p>
-        <p class="hero-desc">
-            Enterprise-grade insights from ball-by-ball IPL data — player performance,
-            head-to-head rivalries, fantasy optimization, and predictive match analytics.
-        </p>
-    </div>
-    """,
+    hero_premium_html(
+        title="CricIntel",
+        subtitle="AI-Powered Cricket Analytics Platform",
+        description=(
+            "Enterprise-grade IPL intelligence — player performance, head-to-head rivalries, "
+            "fantasy optimization, win probability ML, and ball-by-ball match insights."
+        ),
+        logo_path=LOGO_PATH,
+    ),
     unsafe_allow_html=True,
 )
 
 # ── KPI row ───────────────────────────────────────────────────────────────────
-section_header("Platform Overview", "Real-time dataset metrics across the full IPL archive.", "Dashboard")
+section_header(
+    "Platform Overview",
+    "Real-time metrics across the complete IPL ball-by-ball archive.",
+    "Dashboard",
+)
 
 c1, c2, c3, c4 = st.columns(4, gap="medium")
 with c1:
-    st.markdown(kpi_card("🏟️", f"{summary['total_matches']:,}", "Total Matches", delay=0.05), unsafe_allow_html=True)
+    st.markdown(
+        kpi_card("🏟️", f"{summary['total_matches']:,}", "Total Matches", delay=0.05, trend="IPL archive"),
+        unsafe_allow_html=True,
+    )
 with c2:
-    st.markdown(kpi_card("👤", f"{summary['total_players']:,}", "Total Players", delay=0.15, accent="sky"), unsafe_allow_html=True)
+    st.markdown(
+        kpi_card("👤", f"{summary['total_players']:,}", "Total Players", delay=0.12, accent="sky"),
+        unsafe_allow_html=True,
+    )
 with c3:
-    st.markdown(kpi_card("⚾", f"{summary['total_deliveries']:,}", "Total Deliveries", delay=0.25), unsafe_allow_html=True)
+    st.markdown(
+        kpi_card("⚾", f"{summary['total_deliveries']:,}", "Deliveries", delay=0.19),
+        unsafe_allow_html=True,
+    )
 with c4:
     st.markdown(
-        kpi_card("🏆", f"{summary['total_seasons']}", "Seasons Covered", delay=0.35, accent="gold"),
+        kpi_card("🏆", f"{summary['total_seasons']}", "Seasons", delay=0.26, accent="gold"),
         unsafe_allow_html=True,
     )
 
-st.markdown("<div style='height:1.5rem'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:2rem'></div>", unsafe_allow_html=True)
 
 # ── Analytics tabs ──────────────────────────────────────────────────────────────
 tab_overview, tab_performers, tab_insights = st.tabs(
-    ["📈 Quick Stats", "⭐ Top Performers", "🔍 Match Insights"]
+    ["📈 Analytics", "⭐ Top Performers", "🔍 Tournament Pulse"]
 )
 
 with tab_overview:
+    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
     col_a, col_b = st.columns(2, gap="large")
     with col_a:
         top5 = player_stats.head(5).set_index("player")["runs"]
@@ -91,6 +105,7 @@ with tab_overview:
             matches["venue"].nunique(),
         ]
         st.plotly_chart(pie_chart(labels, values, "Dataset Composition"), use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with tab_performers:
     st.markdown(
@@ -132,27 +147,35 @@ with tab_insights:
     with i1:
         st.metric("Completed Matches", f"{insights['total_completed']:,}")
     with i2:
-        st.metric("Avg Target Score", insights["avg_target"])
+        st.metric("Avg Target", insights["avg_target"])
     with i3:
-        st.metric("Toss → Win Rate", f"{insights['toss_win_pct']}%")
+        st.metric("Toss → Win", f"{insights['toss_win_pct']}%")
     with i4:
         st.metric("Top Venue", venue_label)
 
     st.markdown(
-        info_banner(f"🏅 Most Player of the Match awards — <strong>{insights['most_pom']}</strong>"),
+        info_banner(f"🏅 Most Player of the Match — <strong>{insights['most_pom']}</strong>"),
         unsafe_allow_html=True,
     )
 
 # ── Module grid ─────────────────────────────────────────────────────────────────
-section_header("Analytics Modules", "Navigate via the sidebar to explore each intelligence module.", "Explore")
+section_header(
+    "Analytics Modules",
+    "Select a module from the sidebar to explore deep cricket intelligence.",
+    "Explore",
+)
 
 modules = [
-    ("🏏", "Batter Analyzer", "Phase-wise batting breakdowns, scoring patterns & KPI dashboards"),
-    ("⚔️", "Batter vs Bowler", "Head-to-head rivalry stats with ball-by-ball records"),
-    ("🏆", "Fantasy Optimizer", "AI-recommended Best XI with captain & vice-captain picks"),
-    ("📊", "Top Run Scorers", "Interactive leaderboard with hover analytics"),
-    ("🎯", "Win Probability", "Random Forest match outcome predictor"),
-    ("📋", "Match Insights", "Venue, team, season & toss impact analytics"),
+    ("🏏", "Batter Analyzer", "Phase-wise batting KPIs & scoring patterns"),
+    ("⚔️", "Batter vs Bowler", "Head-to-head rivalry analytics"),
+    ("🏆", "Fantasy Optimizer", "AI Best XI with captain picks"),
+    ("📊", "Top Run Scorers", "Interactive leaderboards"),
+    ("🎯", "Win Probability", "Live ML win predictor"),
+    ("🆚", "Player Comparison", "Radar & bar chart comparisons"),
+    ("🏟️", "Venue Analytics", "Stadium scoring intelligence"),
+    ("🏏", "Team Analytics", "Franchise performance trends"),
+    ("📋", "Tournament Insights", "Season & toss analytics"),
+    ("📊", "Match Insights", "Ball-by-ball match deep-dive"),
 ]
 
 rows = [modules[i : i + 3] for i in range(0, len(modules), 3)]

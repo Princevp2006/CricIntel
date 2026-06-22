@@ -1,29 +1,26 @@
-# 🏏 CricIntel — AI-Powered Cricket Analytics Platform
+# CricIntel — AI-Powered Cricket Analytics Platform
 
-A modern, professional sports analytics dashboard built with **Streamlit**, **Pandas**, **Plotly**, and **Scikit-Learn**. CricIntel transforms IPL ball-by-ball data into actionable insights — from individual batter analysis to ML-powered win probability predictions.
+## Overview
 
-![CricIntel](assets/logo.png)
+CricIntel is a professional, AI-powered cricket analytics platform built with **Streamlit**, **Pandas**, **Plotly**, and **Scikit-Learn**. It transforms IPL ball-by-ball data into actionable insights for players, teams, venues, and match predictions.
 
-## ✨ Features
+## Features
 
 | Module | Description |
 |--------|-------------|
-| **Home Dashboard** | Hero landing page with platform KPIs, top performers, and quick stats |
-| **Batter Analyzer** | Runs, strike rate, phase-wise breakdowns, and scoring patterns |
-| **Batter vs Bowler** | Head-to-head stats, dismissals, ball-by-ball table, interactive charts |
-| **Fantasy Optimizer** | AI-recommended Best XI with captain & vice-captain picks |
-| **Top Run Scorers** | Interactive Plotly bar charts and run distribution pie charts |
-| **Win Probability** | Random Forest match outcome predictor |
-| **Match Insights** | Venue, team, season, and toss analytics |
+| **Home Dashboard** | Platform KPIs, top performers, quick stats |
+| **Batter Analyzer** | Phase-wise batting breakdowns & scoring patterns |
+| **Batter vs Bowler** | Head-to-head rivalry statistics |
+| **Fantasy Optimizer** | AI-recommended Best XI with captain picks |
+| **Top Run Scorers** | Interactive leaderboard visualizations |
+| **Win Probability** | Live ML win predictor with gauge & progress bar |
+| **Tournament Insights** | Season, venue, toss & team-level analytics |
+| **Player Comparison** | Radar & bar charts comparing two players |
+| **Venue Analytics** | Stadium scoring patterns & rankings |
+| **Team Analytics** | Franchise win rates & top performers |
+| **Match Insights** | Ball-by-ball analysis by Match ID |
 
-## 🎨 Design
-
-- Modern dark theme with cricket branding (navy, red, gold palette)
-- Custom CSS — rounded cards, hover effects, animated hero section
-- Plotly interactive visualizations throughout
-- Responsive layout with sidebar navigation and logo
-
-## 📂 Project Structure
+## Project Structure
 
 ```
 CricIntel/
@@ -34,31 +31,32 @@ CricIntel/
 │   ├── 3_Fantasy_Team_Optimizer.py
 │   ├── 4_Top_Run_Scorers.py
 │   ├── 5_Win_Probability.py
-│   └── 6_Match_Insights.py
+│   ├── 6_Tournament_Insights.py
+│   ├── 7_Player_Comparison.py
+│   ├── 8_Venue_Analytics.py
+│   ├── 9_Team_Analytics.py
+│   └── 10_Match_Insights.py
 ├── utils/
-│   ├── data_loader.py              # Cached data loading
-│   ├── analytics.py                # Stats & ML models
+│   ├── data_loader.py              # Cached data loading & aggregations
+│   ├── analytics.py                # Stats, ML models, match engine
 │   ├── charts.py                   # Plotly chart builders
-│   └── components.py               # UI components & CSS
-├── assets/
-│   └── logo.png
+│   └── components.py               # UI components & premium CSS
+├── assets/logo.png
 ├── data/
 │   ├── deliveries.csv
 │   └── matches.csv
-├── .streamlit/
-│   └── config.toml
-├── requirements.txt
-└── README.md
+├── .streamlit/config.toml
+└── requirements.txt
 ```
 
-## 🛠️ Technologies
+## Tech Stack
 
 - **Python** · **Pandas** · **NumPy**
 - **Streamlit** — dashboard framework
 - **Plotly** — interactive visualizations
-- **Scikit-Learn** — win probability model
+- **Scikit-Learn** — Random Forest win probability models
 
-## 💻 Installation
+## Installation
 
 ```bash
 git clone https://github.com/princevp2006/CricIntel.git
@@ -66,21 +64,20 @@ cd CricIntel
 pip install -r requirements.txt
 ```
 
-Place IPL datasets in the `data/` folder:
-
+Place IPL datasets in `data/`:
 - `data/deliveries.csv`
 - `data/matches.csv`
 
-## 🚀 Run
+## Run
 
 ```bash
 python -m streamlit run app.py
 ```
 
-Open **http://localhost:8501** in your browser.
+## Deployment
 
-## 👨‍💻 Developer
+Deploy to [Streamlit Cloud](https://streamlit.io/cloud) by connecting your GitHub repository. Ensure `data/` CSVs are included or loaded from a remote source.
 
-**Prince Prajapati**
+## Developer
 
-CricIntel — AI-Powered Cricket Analytics Platform 🏏
+**Prince Prajapati** — CricIntel Enterprise Analytics 🏏

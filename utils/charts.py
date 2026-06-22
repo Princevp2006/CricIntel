@@ -267,3 +267,140 @@ def win_probability_chart(
 def apply_chart_layout(fig: go.Figure, title: str = "", height: int = 380) -> go.Figure:
     """Apply premium theme to ad-hoc Plotly figures in page modules."""
     return _apply_theme(fig, title, height)
+
+
+def radar_chart(
+    categories: list[str],
+    values_a: list[float],
+    values_b: list[float],
+    name_a: str,
+    name_b: str,
+    title: str,
+) -> go.Figure:
+    """Normalized radar comparison between two players."""
+    max_vals = [max(a, b, 1) for a, b in zip(values_a, values_b)]
+    norm_a = [v / m * 100 for v, m in zip(values_a, max_vals)]
+    norm_b = [v / m * 100 for v, m in zip(values_b, max_vals)]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatterpolar(
+        r=norm_a + [norm_a[0]],
+        theta=categories + [categories[0]],
+        fill="toself",
+        fillcolor="rgba(56,189,248,0.15)",
+        line=dict(color=COLORS["sky"], width=2),
+        name=name_a,
+        hovertemplate="<b>%{theta}</b><br>%{r:.0f}/100<extra></extra>",
+    ))
+    fig.add_trace(go.Scatterpolar(
+        r=norm_b + [norm_b[0]],
+        theta=categories + [categories[0]],
+        fill="toself",
+        fillcolor="rgba(230,57,70,0.15)",
+        line=dict(color=COLORS["crimson"], width=2),
+        name=name_b,
+        hovertemplate="<b>%{theta}</b><br>%{r:.0f}/100<extra></extra>",
+    ))
+    fig.update_layout(
+        template="cricintel",
+        polar=dict(
+            bgcolor="rgba(0,0,0,0)",
+            radialaxis=dict(visible=True, range=[0, 100], gridcolor=COLORS["grid"], tickfont=dict(size=9, color=COLORS["muted"])),
+            angularaxis=dict(gridcolor=COLORS["grid"], tickfont=dict(size=11, color=COLORS["text"])),
+        ),
+        title=dict(text=title, x=0, xanchor="left"),
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=-0.15, x=0),
+        height=420,
+        margin=dict(l=60, r=60, t=60, b=60),
+    )
+    return fig
+
+
+def comparison_bar_chart(
+    categories: list[str],
+    values_a: list,
+    values_b: list,
+    name_a: str,
+    name_b: str,
+    title: str,
+) -> go.Figure:
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        name=name_a, x=categories, y=values_a,
+        marker=dict(color=COLORS["sky"], cornerradius=6),
+        hovertemplate="<b>%{x}</b><br>" + name_a + ": %{y}<extra></extra>",
+    ))
+    fig.add_trace(go.Bar(
+        name=name_b, x=categories, y=values_b,
+        marker=dict(color=COLORS["crimson"], cornerradius=6),
+        hovertemplate="<b>%{x}</b><br>" + name_b + ": %{y}<extra></extra>",
+    ))
+    fig.update_layout(barmode="group", bargap=0.18, bargroupgap=0.08)
+    return _apply_theme(fig, title, height=380)
+
+
+def line_chart(
+    df: pd.DataFrame,
+    x: str,
+    y: str,
+    color: str | None,
+    title: str,
+    labels: dict | None = None,
+) -> go.Figure:
+    fig = px.line(
+        df, x=x, y=y, color=color,
+        color_discrete_sequence=CHART_PALETTE,
+        labels=labels or {},
+        markers=True,
+    )
+    fig.update_traces(line=dict(width=2.5), marker=dict(size=7))
+    return _apply_theme(fig, title, height=380)
+
+
+def wickets_timeline_chart(wickets_df: pd.DataFrame, title: str) -> go.Figure:
+    if wickets_df.empty:
+        fig = go.Figure()
+        fig.add_annotation(text="No wickets", showarrow=False, font=dict(color=COLORS["muted"]))
+        return _apply_theme(fig, title, height=320)
+
+    fig = px.scatter(
+        wickets_df,
+        x="over_ball",
+        y="inning",
+        size=[12] * len(wickets_df),
+        color="inning",
+        hover_data=["player_dismissed", "bowler", "over"],
+        color_discrete_sequence=CHART_PALETTE,
+        labels={"over_ball": "Over", "inning": "Inning"},
+    )
+    fig.update_traces(marker=dict(symbol="x", line=dict(width=2)))
+    return _apply_theme(fig, title, height=340)
+
+
+def runs_per_over_chart(runs_df: pd.DataFrame, title: str) -> go.Figure:
+    fig = px.bar(
+        runs_df,
+        x="over",
+        y="runs_in_over",
+        color="inning",
+        barmode="group",
+        color_discrete_sequence=CHART_PALETTE,
+        labels={"over": "Over", "runs_in_over": "Runs", "inning": "Inning"},
+    )
+    fig.update_traces(marker=dict(cornerradius=5), hovertemplate="Over %{x}<br>Runs: %{y}<extra></extra>")
+    return _apply_theme(fig, title, height=380)
+
+
+def cumulative_runs_chart(runs_df: pd.DataFrame, title: str) -> go.Figure:
+    fig = px.line(
+        runs_df,
+        x="over",
+        y="cumulative_runs",
+        color="inning",
+        markers=True,
+        color_discrete_sequence=CHART_PALETTE,
+        labels={"over": "Over", "cumulative_runs": "Score", "inning": "Inning"},
+    )
+    fig.update_traces(line=dict(width=2.5))
+    return _apply_theme(fig, title, height=380)

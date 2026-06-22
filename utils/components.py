@@ -285,6 +285,194 @@ html, body, [class*="css"] {
     position: relative;
 }
 
+/* ── Premium hero (portfolio landing) ── */
+.hero-premium {
+    position: relative;
+    border-radius: 28px;
+    padding: 0;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+    border: 1px solid var(--ci-glass-border);
+    background: linear-gradient(145deg, rgba(10,22,40,0.95) 0%, rgba(6,10,20,0.9) 100%);
+    box-shadow: var(--ci-shadow), 0 0 80px rgba(230,57,70,0.1);
+    backdrop-filter: blur(24px);
+}
+.hero-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 75%);
+    pointer-events: none;
+}
+.hero-premium-inner {
+    position: relative;
+    padding: 3rem 2.75rem 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+}
+.hero-premium-glow {
+    position: absolute;
+    width: 500px; height: 500px;
+    top: -200px; right: -100px;
+    background: radial-gradient(circle, rgba(230,57,70,0.18) 0%, transparent 65%);
+    pointer-events: none;
+}
+.hero-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+.hero-pill {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--ci-muted);
+}
+.hero-pill.live {
+    border-color: rgba(45,212,191,0.4);
+    color: #2DD4BF;
+    background: rgba(45,212,191,0.08);
+    animation: glow-pulse 3s ease-in-out infinite;
+}
+.hero-premium-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin: 0;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F8 40%, #F4A261 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-premium-sub {
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+    color: var(--ci-muted);
+    margin: 0.85rem 0 0;
+    font-weight: 400;
+    max-width: 540px;
+    line-height: 1.55;
+}
+.hero-premium-desc {
+    color: #94A8C4;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+    max-width: 560px;
+}
+.hero-logo-wrap {
+    width: 140px; height: 140px;
+    border-radius: 24px;
+    background: var(--ci-glass);
+    border: 1px solid var(--ci-glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 40px rgba(230,57,70,0.12);
+    animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+}
+.tech-pill {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--ci-glass-border);
+    color: #C8D4EA;
+    transition: all 0.2s ease;
+}
+.tech-pill:hover {
+    border-color: rgba(230,57,70,0.35);
+    background: rgba(230,57,70,0.08);
+    color: var(--ci-text);
+}
+.portfolio-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.25rem 2.75rem;
+    background: rgba(0,0,0,0.25);
+    border-top: 1px solid var(--ci-glass-border);
+    position: relative;
+}
+.portfolio-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--ci-muted);
+}
+.portfolio-item strong {
+    color: var(--ci-gold);
+    font-weight: 600;
+}
+.portfolio-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #2DD4BF;
+    box-shadow: 0 0 8px rgba(45,212,191,0.6);
+}
+
+/* Progress bar polish */
+.stProgress > div > div > div > div {
+    background: linear-gradient(90deg, var(--ci-crimson), var(--ci-gold)) !important;
+    border-radius: 999px !important;
+}
+.stProgress > div > div {
+    background: rgba(255,255,255,0.06) !important;
+    border-radius: 999px !important;
+}
+
+/* Container borders → glass */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background: var(--ci-glass) !important;
+    border-color: var(--ci-glass-border) !important;
+    border-radius: var(--ci-radius-md) !important;
+    backdrop-filter: blur(12px);
+}
+
+@media (max-width: 768px) {
+    .hero-premium-inner {
+        grid-template-columns: 1fr;
+        padding: 2rem 1.5rem 1.5rem;
+        text-align: center;
+    }
+    .hero-logo-wrap {
+        margin: 0 auto;
+        width: 100px; height: 100px;
+    }
+    .hero-premium-sub, .hero-premium-desc { max-width: 100%; }
+    .tech-stack { justify-content: center; }
+    .portfolio-strip { padding: 1rem 1.25rem; justify-content: center; }
+    .hero-eyebrow { justify-content: center; }
+}
+
 /* ── Glass KPI cards ── */
 @keyframes kpi-rise {
     from { opacity: 0; transform: translateY(24px) scale(0.97); }
@@ -931,6 +1119,53 @@ def stat_banner(label: str, value: str, meta: str = "") -> str:
 
 def info_banner(text: str) -> str:
     return f'<div class="info-banner">{text}</div>'
+
+
+def hero_premium_html(
+    title: str = "CricIntel",
+    subtitle: str = "AI-Powered Cricket Analytics Platform",
+    description: str = "",
+    logo_path: Path | None = None,
+) -> str:
+    logo_html = ""
+    if logo_path and logo_path.exists():
+        # Streamlit serves static from path; use img with file path in markdown won't work
+        # Use emoji fallback in hero; logo shown in sidebar
+        logo_html = '<div style="font-size:4rem;line-height:1">🏏</div>'
+    else:
+        logo_html = '<div style="font-size:4rem;line-height:1">🏏</div>'
+
+    return f"""
+    <div class="hero-premium">
+        <div class="hero-premium-glow"></div>
+        <div class="hero-premium-inner">
+            <div>
+                <div class="hero-eyebrow">
+                    <span class="hero-pill live">● Live Analytics</span>
+                    <span class="hero-pill">IPL Ball-by-Ball</span>
+                    <span class="hero-pill">Machine Learning</span>
+                </div>
+                <h1 class="hero-premium-title">{title}</h1>
+                <p class="hero-premium-sub">{subtitle}</p>
+                <p class="hero-premium-desc">{description}</p>
+                <div class="tech-stack">
+                    <span class="tech-pill">Python</span>
+                    <span class="tech-pill">Streamlit</span>
+                    <span class="tech-pill">Plotly</span>
+                    <span class="tech-pill">Scikit-Learn</span>
+                    <span class="tech-pill">Pandas</span>
+                </div>
+            </div>
+            <div class="hero-logo-wrap">{logo_html}</div>
+        </div>
+        <div class="portfolio-strip">
+            <div class="portfolio-item"><span class="portfolio-dot"></span><strong>Portfolio Ready</strong></div>
+            <div class="portfolio-item">10 Analytics Modules</div>
+            <div class="portfolio-item">260K+ Deliveries</div>
+            <div class="portfolio-item">Production UI</div>
+        </div>
+    </div>
+    """
 
 
 def render_footer() -> None:
